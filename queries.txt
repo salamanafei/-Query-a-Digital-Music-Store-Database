@@ -1,0 +1,99 @@
+Q1: Which genre is the most trendy?
+
+WITH t1 AS
+	(SELECT DISTINCT cus.CustomerId AS id ,g.Name AS Genre_Name
+		FROM Customer cus 
+		JOIN Invoice i
+		ON cus.CustomerId = i.CustomerId
+		JOIN InvoiceLine il
+		ON i.InvoiceId = il.InvoiceId
+		JOIN Track t
+		ON il.TrackId = t.TrackId
+		JOIN Genre g
+		ON t.GenreId = g.GenreId)
+SELECT t1.Genre_Name, COUNT(c.CustomerId) AS Gener_Popularity
+FROM t1
+JOIN Customer c 
+ON t1.id = c.CustomerId
+GROUP BY 1
+ORDER BY 2 DESC;
+
+---------------------------------------------------------------------------------
+
+Q2: Which agent has the most sales?
+
+SELECT emp.FirstName||emp.LastName AS Name, ROUND(SUM(i.total),2) AS total_sales
+FROM Employee emp 
+JOIN Customer c
+ON emp.EmployeeId = c.SupportRepId
+JOIN Invoice i
+ON c.CustomerId = i.CustomerId
+GROUP BY 1;
+
+---------------------------------------------------------------------------------
+
+Q3: Who is writing the Rock music?
+
+SELECT a.Name, COUNT(*) AS songs
+FROM Artist a
+JOIN Album al
+ON a.ArtistId = al.ArtistId
+JOIN Track t
+ON al.AlbumId = t.AlbumId
+JOIN Genre g
+ON t.GenreId = g.GenreId
+WHERE g.Name = 'Rock'
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 10;
+
+---------------------------------------------------------------------------------
+Q4: which artist has earned the most? TOP 3
+
+SELECT art.Name , ROUND(SUM(il.UnitPrice * il.Quantity),3) AS Amount_spent
+FROM Customer c
+JOIN Invoice i
+ON c.CustomerId = i.CustomerId
+JOIN InvoiceLine il
+ON i.InvoiceId = il.InvoiceId
+JOIN Track t
+ON t.TrackId = il.TrackId
+JOIN Album a
+ON t.AlbumId = a.AlbumId
+JOIN Artist art 
+ON a.ArtistId = art.ArtistId
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 3;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT e.FirstName , ROUND(SUM(i.total),3)
+FROM Employee e
+JOIN Customer c
+ON e.EmployeeId = c.SupportRepId
+JOIN Invoice i
+ON c.CustomerId = i.CustomerId
+GROUP BY 1
+ORDER BY 2 DESC
